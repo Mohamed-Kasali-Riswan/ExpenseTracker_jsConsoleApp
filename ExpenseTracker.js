@@ -69,10 +69,10 @@ function calculateTotal() {
 }
 
 function ExpenseTracker() {
-  let running = true;
+  let isAlive = true;
   console.log("\t\t\t\t\tExpense Tracker");
   console.log("\t\t\t\t\t---------------");
-  while (running) {
+  while (isAlive) {
     console.log("\nChoose an option:");
     console.log("1. Add Expense");
     console.log("2. View Expenses");
@@ -101,7 +101,7 @@ function ExpenseTracker() {
         break;
       case 6:
         console.log("Thankyou!");
-        running = false; // Exit loop
+        isAlive = false; // Exit loop
         break;
       default:
         console.log("OOPS! Invalid choice. Please try again.");
