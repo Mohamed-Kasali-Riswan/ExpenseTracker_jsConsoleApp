@@ -1,0 +1,259 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <style>
+        body{
+            background-color:rgb(198, 189, 150);
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            
+        }
+
+        input{
+            width: 300px;
+            height: 30px;
+            border: none;
+        }
+
+        button{
+            height: 27px;
+            background-color:   #007BFF;   /*rgb(176, 200, 200); */
+            color: #FFFFFF;
+            border: none;
+        }
+
+        input,button{
+            border-radius: 3px;
+            margin: 5px;
+        }
+
+        li{
+            font-size: small;
+        }
+
+        .container{
+            position: relative;
+            height: 90%;
+            width: 400px;
+            border: 1px solid rgb(115, 100, 100);
+            border-radius: 20px;
+            background-color: rgb(240, 240, 239);
+            text-shadow: 1px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 50px;
+        }
+
+        .background {
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url(expenseTracker.jpg) no-repeat center center/cover;
+            background-size: cover; 
+            background-attachment: fixed; 
+            opacity: 0.75;
+        }
+
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .statusSpace {
+            display: grid;
+            /* flex-direction: column; */
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="container">
+            <h1>Expense Tracker</h1>
+            <input id="name" type="text" placeholder="  Enter the Name">
+            <input id="amount" type="number" placeholder="  Enter the Amount"><br>
+            <button onclick="AddEntity()" style="width: 100px;">Add</button>
+            <button onclick="viewExpenses()" style="width: 100px;">View</button>
+            <!-- <button onclick="getInputForEdit()" style="width: 100px;">Update</button> -->
+            <button onclick="calculateTotal()" style="width: 100px;">Total Amount</button>
+            <div id="statusSpace"></div>
+        </div>    
+    </div>
+    <script>
+
+        //Storing all the data in a json format
+        let expenses=[]
+
+        //1.Function to add Expenses
+        function AddEntity(){
+            let name = document.getElementById('name').value;
+            let amount=parseFloat(document.getElementById('amount').value)
+
+            if(name==="" || isNaN(amount) || amount<=0){
+                alert("Please enter a valid data!")
+                return
+            }
+
+            expenses.push({name,amount});
+            let status=document.createElement('h3')
+            document.getElementById('statusSpace').innerText=``
+            status.innerText=`Added Successfully`
+            document.getElementById('statusSpace').appendChild(status)
+            document.getElementById('name').value=""
+            document.getElementById('amount').value=""
+        }
+
+        //2.Function to view All the Expenses
+        function viewExpenses(){
+            let space=document.getElementById('statusSpace')
+            space.innerText=""
+            if(expenses.length===0){
+                let status=document.createElement('h3')
+                status.innerText=`0 Expenses!`
+                document.getElementById('statusSpace').appendChild(status)
+                return
+            }
+            let heading=document.createElement('h3')
+            heading.innerText="Expenses:"
+            space.appendChild(heading)
+            let unOrderedList=document.createElement('ul')
+            expenses.forEach((expense,index)=>{
+                //Delete Button
+                let delButton=document.createElement('button')
+                delButton.innerText="Delete";
+                delButton.onclick=function(){
+                    list.style.opacity="0.5";
+                    list.style.pointerEvents="none";
+                    delExpenses(index);
+                }
+
+                //Update Button
+                let updButton=document.createElement('button')
+                updButton.innerText="Edit";
+                updButton.onclick=function(){
+                    let space=document.getElementById('statusSpace')
+                    space.innerText=""
+            
+                    let nextLine=document.createElement('br')
+
+                    let newName=document.createElement('input')
+                    newName.type='text';
+                    newName.value=expense.name;
+                    newName.placeholder=`${expense.name}`
+
+                    space.appendChild(newName)
+                    space.appendChild(nextLine)
+
+                    let newAmount=document.createElement('input')
+                    newAmount.type='number'
+                    newAmount.value=expense.amount
+                    newAmount.placeholder=`${expense.amount}`
+
+                    space.appendChild(newAmount)
+                    space.appendChild(nextLine)
+
+                    let changable=document.createElement('button')
+                    changable.innerText="update"
+
+                    space.appendChild(changable)
+
+                    changable.onclick=function(){
+                        expenses[index]={name:newName.value,amount:parseFloat(newAmount.value)};
+                        space.innerText="";
+                        viewExpenses()
+                    }
+                }
+
+                let list=document.createElement('li');
+                list.innerText=`${index+1}. ${expense.name} - Rs.${expense.amount}`
+                list.appendChild(delButton)
+                list.appendChild(updButton)
+                unOrderedList.appendChild(list)
+            })
+            space.appendChild(unOrderedList)
+        }
+
+        //3.Function to edit the Expense Details
+        // function getInputForEdit(){
+        //     if(expenses.length===0){
+        //         alert("There is no expenses to Edit!")
+        //         return
+        //     }
+        //     viewExpenses();
+        //     let space=document.getElementById('statusSpace')
+
+        //     let index=document.createElement('input')
+        //     index.type='number';
+        //     index.placeholder="Enter the ID num"
+
+        //     let newName=document.createElement('input')
+        //     newName.type='text';
+        //     newName.placeholder="Enter New Name"
+
+        //     let newAmount=document.createElement('input')
+        //     newAmount.type='number';
+        //     newAmount.placeholder="Enter New Amount"
+
+        //     let changable=document.createElement('button')
+        //     changable.innerText="Change it"
+
+        //     let nextLine=document.createElement('br')
+
+        //     space.appendChild(index)
+        //     space.appendChild(nextLine)
+        //     space.appendChild(newName)
+        //     space.appendChild(nextLine)
+        //     space.appendChild(newAmount)
+        //     space.appendChild(nextLine)
+        //     space.appendChild(changable)
+        //     changable.onclick=function(){
+
+        //         changeIndex=parseInt(index.value)-1;
+        //         changeAmount=parseFloat(newAmount.value)
+
+        //         if(newName.value==="" || isNaN(changeAmount) || changeAmount<=0){
+        //             newName.value=""
+        //             newAmount.value=""
+        //             alert("Please enter a valid data!")
+        //             return
+        //         }
+
+        //         expenses[changeIndex]={name:newName.value,amount:changeAmount};
+        //         space.innerText="";
+        //         let status=document.createElement('h3');
+        //         status.innerText="Updated Successfully"
+        //         space.appendChild(status)
+
+        //     }
+        // }
+
+        //4.Function to delete Expenses
+        function delExpenses(index){
+            expenses.splice(index,1);
+        }
+
+        //5.Function to calculate Total Amount
+        function calculateTotal(){
+            let total=0;
+            expenses.forEach((expense)=>{
+                total+=expense.amount;
+            })
+            let space=document.getElementById('statusSpace')
+            let status=document.createElement('h3')
+            status.innerText=`Total Amount is Rs.${total}`
+            space.innerText=""
+            space.appendChild(status)
+        }
+
+    </script>
+</body>
+</html>
